@@ -1,0 +1,36 @@
+{% extends 'main.html' %}
+
+{% block main %}
+  кабинет
+  {% if teacher %}
+    <div class="col-md-5" id="left-coll">
+    <form role="form" action="{% url 'student_creat' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+              <label for="first_name">Ім'я</label>
+              <input type="text" class="form-control" name="first_name" id="first_name" placeholder="Ім'я">              
+        </div>
+        <div class="form-group">
+              <label for="second_name">Призвище</label>
+              <input type="text" class="form-control" name="second_name" id="second_name" placeholder="Призвище">          
+        </div>
+        <div class="form-group">
+              <label for="patronymic">По-батькові</label>
+              <input type="text" class="form-control" name="patronymic" id="patronymic" placeholder="По-батькові">              
+        </div>
+        <select name="scholl_class">
+          {%for the_class in school_class%}
+                <option>{{the_class}}</option>
+          {%endfor%}
+        </select>      
+         
+         
+        <div>
+         <button type="submit" class="btn btn-default active">Створити</button>
+        </div>
+        
+    </form>
+</div>
+  {% endif %}
+
+{% endblock %}

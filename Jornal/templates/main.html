@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Журнал</title>
+</head>
+<body>
+<header>
+<nav class="dws-menu">
+	<ul>
+		<li><a href="/"><i class="fas fa-home"></i>Головна</a></li>
+		{% if username %}
+		<li><a href="area/"><i class="fas fa-shopping-cart"></i>Кабінет</a></li>
+		{% endif %}
+	</ul>
+</nav>
+</header>
+<div class="subline">
+    <div class="login">
+        {% if username %}
+        <a id='a_title' href="/login/logout/">Вийти</a> <a id='a_title' href="">Профиль: {{ username }}</a>
+        {% else %}
+        <a id='a_title' href="/login/">Увійти</a>
+        {% endif %}
+    </div>
+</div>
+	{% block main %}
+	{% endblock %}
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'main.html' %}
+
+{% block main %}
+<div class="col-md-6" id="left-coll">
+    {% if login_error %}
+         <div class="col-md-12">
+              <p class="help-block">Не верно указан логин или пароль пользователя.</p>
+              <p class="help-block">Если вы забыли логин или пароль, обратитесь к администратору.</p>
+         </div>
+    {% endif %}
+</div>
+<div class="col-md-5" id="left-coll">
+    <form role="form" action="/login/entrance/" method="post">
+        {% csrf_token %}
+         <div class="form-group">
+              <label for="username">Логин</label>
+              <input type="text" class="form-control" name="username" id="username" placeholder="Логин">
+         </div>
+         <div class="form-group">
+              <label for="pass">Пароль</label>
+              <input type="password" class="form-control" name="password" id="password" placeholder="Пароль">
+
+         </div>
+
+        <div>
+         <button type="submit" class="btn btn-default active">Увійти</button>
+        </div>
+
+    </form>
+</div>
+<div class="col-md-1" >
+   <h4><a id='a_title' href="/login/check_in/">Регистрация</a></h4>
+</div>
+
+{{login_error}}
+
+
+{% endblock %}

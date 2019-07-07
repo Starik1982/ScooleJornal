@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+{% block main %}
+  кабинет
+  {% if teacher %}
+    учитель
+    <a href="class_creating/">Створити Класс</a>
+  {% endif %}
+
+  {% if student %}
+          школьник 
+  {% endif %}
+
+  {% if parent %}
+          посетитель 
+  {% endif %}
+
+{% endblock %}
