@@ -6,10 +6,10 @@ from .views import (login,
                     logout)
 
 urlpatterns = [
-    path('check_in/', check_in_view),
-    path('logout/', logout),
-    path('entrance/', entrance),
-    path('registration/', registration),
+    path('check_in/', check_in_view, name='check_in'),
+    path('logout/', logout, name='logout'),
+    path('entrance/', entrance, name='entrance'),
+    path('registration/', registration, name='registration'),
     path('', login),
 
 ]

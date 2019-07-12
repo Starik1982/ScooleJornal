@@ -10,7 +10,7 @@
     {% endif %}
 </div>
 <div class="col-md-5" id="left-coll">
-    <form role="form" action="/login/entrance/" method="post">
+    <form role="form" action="{% url 'entrance' %}" method="post">
         {% csrf_token %}
          <div class="form-group">
               <label for="username">Логин</label>
@@ -29,7 +29,7 @@
     </form>
 </div>
 <div class="col-md-1" >
-   <h4><a id='a_title' href="/login/check_in/">Регистрация</a></h4>
+   <h4><a id='a_title' href="{% url 'check_in' %}">Регистрация</a></h4>
 </div>
 
 {{login_error}}

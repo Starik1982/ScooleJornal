@@ -76,3 +76,18 @@ class GradesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Grades, GradesAdmin)
+
+class StudyPeriodAdmin(admin.TabularInline):
+    model = StudyPeriod
+    extra = 0
+
+
+class StudyPeriodAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in StudyPeriod._meta.fields]
+
+    class Meta:
+        model = StudyPeriod
+
+
+admin.site.register(StudyPeriod, StudyPeriodAdmin)
+

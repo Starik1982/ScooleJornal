@@ -1,0 +1,74 @@
+{% extends 'main.html' %}
+
+{% block main %}
+  журнал
+    {% if teacher %}
+        <div class="col-md-5" id="left-coll">
+            <form role="form" action="{% url 'grades' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="grades">Оцінка</label>
+                    <input type="text" class="form-control" name="grades" id="grades" placeholder="Оцінка">
+
+                    <select name="student">
+                        {%for student in get_list_class%}
+                        <option> {{student.second_name}} {{student.first_name}} {{student.patronymic}}</option>
+                        {%endfor%}
+                    </select>
+                    <select name="class_title" style="display:">
+                        <option> {{class_title}}</option>
+                    </select>
+                    <select name="subject_title" style="display:">
+                        <option> {{subject_title}}</option>
+                    </select>
+                    <button type="submit" class="btn btn-default active">Ввести</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="" id="">
+            <form role="form" action="{% url 'load_subject_jornal' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <select name="subject">
+                        {%for subject in subjects%}
+                        <option> {{subject}}</option>
+                        {%endfor%}
+                    </select>
+                    <select name="class_title" style="display:">
+                        <option> {{class_title}}</option>
+                    </select>
+                    <button type="submit" class="btn btn-default active">Завантажити</button>
+                </div>
+            </form>
+        </div>
+        {% if class_title %}
+        <div>{{class_title}} клас</div>
+        {% endif %}
+        {% if subject_title %}
+        <div>Журнал з предмету: {{subject_title}} </div>
+        {% endif %}
+        {%for student in get_list_class%}
+        <div>{{student.second_name}} {{student.first_name}} {{student.patronymic}}</div>
+        {%endfor%}
+
+<table border="1">
+   <caption>{% if class_title %}{{class_title}} клас{% endif %}</caption>
+   <tr>
+    {%for day in object_mont%}
+    <th>{{day.day}}.{{day.month}}</th>
+    {%endfor%}
+    </tr>
+   <tr>
+    {%for student in get_list_class%}
+      <tr><td id="{{student.second_name}}">{{student.second_name}} {{student.first_name}} {{student.patronymic}}</td></tr>
+    {%endfor%}
+  
+  </table>
+
+
+    {% endif %}
+
+
+{% endblock %}
+

@@ -4,7 +4,23 @@
   кабинет
   {% if teacher %}
     учитель
-    <a href="class_creating/">Створити Класс</a>
+  <div>
+    <a href="{% url 'class_creating' %}">Створити Класс</a>
+  </div>
+  <div class="col-md-5" id="left-coll">
+    <form role="form" action="{% url 'class_jornal'%}" method="post">
+      {% csrf_token %}
+      <select name="scholl_class">
+          {%for the_class in school_class%}
+                <option>{{the_class}}</option>
+          {%endfor%}
+      </select>
+      <div>
+         <button type="submit" class="btn btn-default active">Відкрити журнал</button>
+      </div>
+    </form>
+  </div>
+
   {% endif %}
 
   {% if student %}
