@@ -77,6 +77,11 @@ class Grades(models.Model):
     school_class = models.ForeignKey(SchoolClass, blank=True, null=True, on_delete=models.SET_NULL)
     lesson_date = models.DateField(default=timezone.now, auto_now=False)
 
+
     class Meta:
         verbose_name = 'Оцінка'
         verbose_name_plural = 'Оцінки'
+
+
+    def __str__(self):
+        return "%s" % (self.grades)

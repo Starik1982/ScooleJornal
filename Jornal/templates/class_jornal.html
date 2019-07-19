@@ -1,5 +1,4 @@
 {% extends 'main.html' %}
-
 {% block main %}
   журнал
     {% if teacher %}
@@ -25,9 +24,8 @@
                 </div>
             </form>
         </div>
-
         <div class="" id="">
-            <form role="form" action="{% url 'load_subject_jornal' %}" method="post">
+            <form role="form" action="{% url 'load_subject' %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <select name="subject">
@@ -42,33 +40,14 @@
                 </div>
             </form>
         </div>
-        {% if class_title %}
-        <div>{{class_title}} клас</div>
-        {% endif %}
-        {% if subject_title %}
-        <div>Журнал з предмету: {{subject_title}} </div>
-        {% endif %}
-        {%for student in get_list_class%}
-        <div>{{student.second_name}} {{student.first_name}} {{student.patronymic}}</div>
-        {%endfor%}
 
-<table border="1">
-   <caption>{% if class_title %}{{class_title}} клас{% endif %}</caption>
-   <tr>
-    {%for day in object_mont%}
-    <th>{{day.day}}.{{day.month}}</th>
-    {%endfor%}
-    </tr>
-   <tr>
-    {%for student in get_list_class%}
-      <tr><td id="{{student.second_name}}">{{student.second_name}} {{student.first_name}} {{student.patronymic}}</td></tr>
-    {%endfor%}
-  
-  </table>
+{% if subject_title %}<div>Журнал з предмету: <text id="subject">{{subject_title}}</text></div>{% endif %}
+{% if class_title %}<div><text id="class_title">{{class_title}}</text> клас</div>{% endif %}
+
+<div id ='table'></div>
 
 
-    {% endif %}
-
+{% endif %}
 
 {% endblock %}
 

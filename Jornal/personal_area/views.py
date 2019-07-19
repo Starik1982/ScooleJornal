@@ -1,9 +1,12 @@
 from django.shortcuts import render, render_to_response
+from django.http import HttpResponse
+from django.http import JsonResponse
 from django.contrib import auth
-from main.models import SchoolClass, Student, Subject, Grades, Teacher
+from main.models import SchoolClass, Student, Subject, Grades, Teacher, StudyPeriod
 from django.template.context_processors import csrf
 from django.db.models import Q
-from datetime import date
+import json
+import datetime
 import calendar
 
 
@@ -58,6 +61,7 @@ def student_creating(request):
         student.save()
     return render_to_response('personal_area.html', args)
 
+
 def class_jornal(request):
     args = {}
     args.update(csrf(request))
@@ -69,7 +73,7 @@ def class_jornal(request):
         class_title = request.POST.get('scholl_class', '')
         school_class = SchoolClass.objects.get(title=class_title)
         args['class_title'] = class_title
-        args['get_list_class'] = Student.objects.filter(school_class=school_class.id)
+        #args['get_list_class'] = Student.objects.filter(school_class=school_class.id)
     args['subjects'] = Subject.objects.all
     return render_to_response('class_jornal.html', args)
 
@@ -106,7 +110,9 @@ def grades(request):
     return render_to_response('class_jornal.html', args)
 
 
-def load_subject_jornal(request):
+def load_subject(request):
+    # jornal = []
+    # x=0
     args = {}
     args.update(csrf(request))
     args['username'] = auth.get_user(request).username
@@ -121,13 +127,53 @@ def load_subject_jornal(request):
         args['get_list_class'] = Student.objects.filter(school_class=school_class.id)
         args['class_title'] = class_title
         args['subject_title'] = subject
-        year = int(str(date.today()).split('-')[0])
-        month = int(str(date.today()).split('-')[1])
-        object_calendar = calendar.Calendar(0)
-        args['object_mont'] = object_calendar.itermonthdates(year, month)
-        print(args['object_mont'])
-
     return render_to_response('class_jornal.html', args)
+
+
+def load_subject_jornal(request, class_title, subject):
+    args = {}
+    student_list = []
+    grades = []
+    iterator = 1
+    class_title = class_title
+    subject = subject
+    args['class_title'] = class_title
+    args['subject'] = subject
+    school_class = SchoolClass.objects.get(title=class_title)
+    get_list_class = Student.objects.filter(school_class=school_class.id)
+    subject_object = Subject.objects.get(title=subject)
+    grades_list = Grades.objects.filter(Q(school_class=school_class.id),
+                                   Q(subject=subject_object.id))
+    date = datetime.datetime.now()
+    study_period = StudyPeriod.objects.all()
+    for i in study_period:
+         if i.start < date.date()  and date.date() < i.end:
+             args['period'] = {'title': i.title, 'start': i.start, 'end': i.end, }
+             start = i.start
+             end = i.end
+
+    for i in grades_list:
+        if i.lesson_date > start and  i.lesson_date < end:
+           grades.append(i)
+    for i in get_list_class:
+        student_list.append((i.first_name, i.second_name, i.patronymic))
+    args['student_list'] = student_list
+    for i in grades:
+        score = i.grades
+        student_first_name = i.student.first_name
+        student_last_name = i.student.second_name
+        student_patronymic = i.student.patronymic
+        date = i.lesson_date
+        args[iterator] = {'score': score,
+                          'student': {'first_name': student_first_name,
+                                      'last_name':student_last_name,
+                                      'patronymic':student_patronymic},
+                          'date': date
+                          }
+
+        iterator+=1
+    args['iterator'] = iterator
+    return JsonResponse(args)
 
 
 
