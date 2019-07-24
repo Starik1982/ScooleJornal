@@ -1,25 +1,3 @@
-/*function tableCreate() {
-    var body = document.getElementsByTagName('body')[0];
-    var table = document.createElement('table');
-    var tr = document.createElement('tr');
-    for (var i = 0; i < 3; i++) {
-    var th = document.createElement('th');
-    th.innerHTML = "<h1>Привет!"+i+"</h1>";
-    tr.appendChild(th);
-		}
-	table.appendChild(tr)
-
-    for (var j = 0; j < 8; j++) {
-	var tr = document.createElement('tr');
-		for (var i = 0; i < 3; i++) {
-    	var td = document.createElement('td');
-    	td.innerHTML = "<h1>Строка №"+(j+1)+"Столбец №"+(i+1)+" </h1>";
-    	tr.appendChild(td);
-    	}
-    	table.appendChild(tr)
-	}
-    body.appendChild(table)
-    }*/
 
 function getElement(){
     var class_title = document.getElementById('class_title')
@@ -40,13 +18,11 @@ function getJSON(){
     request.onload = function() {
     var jornal = request.response;
     tableCreate(jornal)
-
-    }
+    };
 };
 
 function tableCreate(object){
     jornal = object
-    console.log(jornal)
     //таблица
     var div = document.getElementById('table');
     var table = document.createElement('table');
@@ -60,7 +36,7 @@ function tableCreate(object){
     //ряд с датами
     var date = [];
     for(var j = 1; j < jornal['iterator']; j++) {
-       date.splice(j-1, 0, jornal[j+'']['date'])
+       date.push(jornal[j+'']['date'])
     };
     dateList = new Set(date)
     var tr = document.createElement('tr');
@@ -79,24 +55,41 @@ function tableCreate(object){
     stap = 0
     for(var i of jornal['student_list']) {
         studentGrades.push(i);
-        for(var j = 1; j < jornal['iterator']; j++) {
-            if (i[0]===jornal[j+'']['student']['first_name']
-            && i[1]===jornal[j+'']['student']['last_name']
-            && i[2]===jornal[j+'']['student']['patronymic']){
-            htmlTr.push(jornal[j+'']);
-            };
-        studentGrades[stap].push(htmlTr);
+        for (var k of dateList){
+            var htmlTr = [];
+            var vall = {'date': k, 'score': null}
+            htmlTr.push(vall);
+            studentGrades[stap].push(htmlTr);
+            htmlTr = [];
         };
-
     stap = stap + 1
     };
-    console.log(studentGrades)
-
-
+    for(i of studentGrades){
+        vall = i.slice(3)
+        for (j of vall){
+            for(var s = 1; s < jornal['iterator']; s++){
+               if (i[0]===jornal[String(s)]['student']['first_name']
+                && i[1]===jornal[String(s)]['student']['last_name']
+                && i[2]===jornal[String(s)]['student']['patronymic']
+                && j[0]['date']===jornal[String(s)]['date']){
+                j[0]['score'] = jornal[String(s)]['score']
+               };
+            };
+        };
+    };
+    for (i of studentGrades){
+        var tr = document.createElement('tr');
+        table.appendChild(tr);
+        var td = document.createElement('td');
+        tr.appendChild(td);
+        td.innerHTML = i[1]+' '+i[0][0]+'.'+i[2][0]+'.'
+        vall = i.slice(3)
+            for (j of vall){
+                var td = document.createElement('td');
+                tr.appendChild(td);
+                td.innerHTML = j[0]['score']
+            };
+        };
 };
-
-
-
-
 
 getJSON()

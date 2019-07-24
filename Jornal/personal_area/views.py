@@ -1,13 +1,12 @@
 from django.shortcuts import render, render_to_response
-from django.http import HttpResponse
 from django.http import JsonResponse
 from django.contrib import auth
 from main.models import SchoolClass, Student, Subject, Grades, Teacher, StudyPeriod
 from django.template.context_processors import csrf
 from django.db.models import Q
-import json
+from django.contrib import messages
 import datetime
-import calendar
+
 
 
 def personal_area(request):
@@ -94,25 +93,27 @@ def grades(request):
         student = request.POST.get('student', '')
         str = student.split(' ')
         subject_title = request.POST.get('subject_title', '')
+        school_class = SchoolClass.objects.get(title=class_title)
+        args['class_title'] = class_title
+        args['get_list_class'] = Student.objects.filter(school_class=school_class.id)
+        args['subject_title'] = subject_title
+        if grades not in ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'В', 'в'):
+            args['message_error'] = "Некоректне значення оцінки. Оцінка має відповідати " \
+                                    "одному з значень: число від 1 до 12, 'В' або 'в'."
+            return  render_to_response('class_jornal.html', args)
         subject = Subject.objects.get(title=subject_title)
         student = Student.objects.get(Q(school_class=class_id),
                                          Q(second_name=str[0]),
                                          Q(first_name=str[1]),
                                          Q(patronymic=str[2]))
         teacher_id = Teacher.objects.get(user_id=1)
-        school_class = SchoolClass.objects.get(title=class_title)
         make_grades = Grades(grades=grades, student=student, subject=subject,
                              teacher=teacher_id, school_class=school_class)
         make_grades.save()
-        args['class_title'] = class_title
-        args['get_list_class'] = Student.objects.filter(school_class=school_class.id)
-        args['subject_title'] = subject_title
     return render_to_response('class_jornal.html', args)
 
 
 def load_subject(request):
-    # jornal = []
-    # x=0
     args = {}
     args.update(csrf(request))
     args['username'] = auth.get_user(request).username
@@ -151,7 +152,6 @@ def load_subject_jornal(request, class_title, subject):
              args['period'] = {'title': i.title, 'start': i.start, 'end': i.end, }
              start = i.start
              end = i.end
-
     for i in grades_list:
         if i.lesson_date > start and  i.lesson_date < end:
            grades.append(i)
@@ -170,7 +170,6 @@ def load_subject_jornal(request, class_title, subject):
                                       'patronymic':student_patronymic},
                           'date': date
                           }
-
         iterator+=1
     args['iterator'] = iterator
     return JsonResponse(args)

@@ -8,7 +8,6 @@
                 <div class="form-group">
                     <label for="grades">Оцінка</label>
                     <input type="text" class="form-control" name="grades" id="grades" placeholder="Оцінка">
-
                     <select name="student">
                         {%for student in get_list_class%}
                         <option> {{student.second_name}} {{student.first_name}} {{student.patronymic}}</option>
@@ -23,6 +22,7 @@
                     <button type="submit" class="btn btn-default active">Ввести</button>
                 </div>
             </form>
+            {% if message_error %}{{ message_error }}{% endif %}
         </div>
         <div class="" id="">
             <form role="form" action="{% url 'load_subject' %}" method="post">
